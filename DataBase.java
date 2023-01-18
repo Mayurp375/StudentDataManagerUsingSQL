@@ -9,12 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-public class DataBase extends MyConnection {
+public class DataBase {
     static Scanner sc = new Scanner(System.in);
 
     public static void showData() throws SQLException {
+        MyConnection con = new MyConnection();
         String query = "select * from student";
-        Connection root = connection(); //method called
+        Connection root = MyConnection.connection(); //method called
         Statement statement = root.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
 //list
@@ -24,8 +25,9 @@ public class DataBase extends MyConnection {
             Bridglab employee = new Bridglab();
             employee.setId(resultSet.getInt(1));
             employee.setName(resultSet.getString(2));
-            employee.setRollNo(resultSet.getInt(3));
-            employee.setMarks(resultSet.getDouble(4));
+            employee.setRollNo(resultSet.getInt(4));
+            employee.setMarks(resultSet.getDouble(5));
+            employee.setAge(resultSet.getInt(3));
             employeeList.add(employee);
         }
         //Iterator
@@ -37,10 +39,11 @@ public class DataBase extends MyConnection {
             System.out.println("++++++++++++++++++++++");
         }
     }
+
     //insert value
     public static void insertData() throws SQLException {
         System.out.println("Enter name :");
-        String name = sc.next();
+        String name = sc.nextLine();
         System.out.println("Enter age :");
         int age = sc.nextInt();
         System.out.println("Enter roll :");
@@ -49,14 +52,42 @@ public class DataBase extends MyConnection {
         double mark = sc.nextDouble();
 //query
         String q = "insert into student(name,age,rollNo,marks)values('" + name + "'," + age + "," + roll + "," + mark + ");";
-        Connection root = connection();
+        Connection root = MyConnection.connection();
         Statement statement = root.createStatement();
         //if added
         int resultSet = statement.executeUpdate(q);
-        if(resultSet == 1){
+        if (resultSet == 1) {
             System.out.println("added Successfully...........");
-        }else {
+        } else {
             System.out.println("Something went wrong........");
         }
+        root.close(); //closed connection
+    }
+
+    public static void updateData(int id,String  name) throws SQLException {
+        String q = "update student set name ="+ name+ " where id " + "=" + id;
+        Connection root = MyConnection.connection();
+        Statement statement = root.createStatement();
+        int resultSet = statement.executeUpdate(q);
+        if (resultSet == 1) {
+            System.out.println("update Successfully...........");
+        } else {
+            System.out.println("Something went wrong........");
+        }
+        root.close(); //closed connection
+    }
+
+    public static void deleteData(int id) throws SQLException {
+
+        String q = "delete from student where id " + "=" + id;
+        Connection root = MyConnection.connection();
+        Statement statement = root.createStatement();
+        int resultSet = statement.executeUpdate(q);
+        if (resultSet == 1) {
+            System.out.println("update Successfully...........");
+        } else {
+            System.out.println("Something went wrong........");
+        }
+        root.close(); //closed connection
     }
 }
